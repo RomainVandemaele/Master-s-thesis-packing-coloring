@@ -21,7 +21,6 @@ bool exists_test3 (const std::string& name);
 void argParser(int argc, char const *argv[]);
 
 int main(int argc, char const *argv[]) {
-
   //std::cout << (1 << 2) << std::endl;
   struct timeval end, start;
   unsigned long int timer;

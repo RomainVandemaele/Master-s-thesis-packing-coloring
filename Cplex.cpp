@@ -1,6 +1,6 @@
 #include "Cplex.hpp"
 
-
+//Ex from pdf
 void Cplex::test() {
   IloModel model(env);
   IloNumVarArray var(env);
@@ -34,6 +34,75 @@ void Cplex::test() {
   cplex.getDuals(vals, con);
   std::cout << "Duals : " << vals << '\n';
   env.end();
+}
+
+
+void Cplex::test2() { //Dual
+  IloEnv env2;
+  IloModel model(env2);
+  IloNumVarArray var(env2);
+  IloRangeArray con(env2);
+  for (size_t i = 0; i < N; i++) { //pi_v
+    var.add(IloNumVar(env2, 0, 1,ILOFLOAT));
+  }
+  for (size_t j = 0; j < D-1; j++) {
+    var.add(IloNumVar(env2, 0, 1,ILOFLOAT));
+  }
+  IloExpr obj = var[0];
+  for (size_t j = 1; j < N  ; j++) {
+    obj += var[j];
+  }
+  for (size_t k = 1; k < D  ; k++) {
+    const int c = k;
+    obj += var[N-1 + k]*c;
+  }
+  std::cout << "TEST 2" << '\n';
+  model.add(IloMaximize(env2, obj));
+  obj.end();
+
+  for (size_t i = 0; i < I; i++) {
+    IloExpr exprConstraint(env2);
+    for (size_t j = 0; j < N; j++) {
+      if(incidence[i][j]) {
+        exprConstraint += var[j];
+      }
+    }
+    for (size_t k = 1; k < D  ; k++) {
+      if(classification[i] >= k+1) {
+        exprConstraint += var[N+k -1];
+      }
+    }
+    IloRange ctr1 ( env2, 0 , exprConstraint , 1);
+    exprConstraint.end();
+    con.add(ctr1);
+  }
+
+  //must be one
+
+
+  model.add(con);
+
+
+  IloCplex cplex(model);
+
+  if ( !cplex.solve() ) {
+     env2.error() << "Failed to optimize LP" << endl;
+     throw(-1);
+  }
+  env2.out() << "Solution status = " << cplex.getStatus() << endl;
+  env2.out() << "Solution value  = " << cplex.getObjValue() << endl;
+  IloNumArray vals(env2);
+  cplex.getDuals(vals, con);
+  std::cout << "Duals : " << vals << '\n';
+  std::cout << "RESULT : " << '\n';
+  for (size_t i = 0; i < N+D-1; i++) {
+    if(cplex.getValue(var[i]) == 1) {
+      std::cout << "1 ";
+    }else {
+      std::cout << cplex.getValue(var[i]) << " ";
+    }
+  }
+  env2.end();
 }
 
 Cplex::Cplex() {}
@@ -155,8 +224,9 @@ void Cplex::modelise() {
          IloCplex cplexS(modelSub);
          bool* newSubset = solveSubProblem(cplexS,varSub,conSub);
          addColumn(newSubset); //Adapt primal : adding new subset
-         i++;
          envS.end();
+         //test2();
+         ++i;
        }
 
 
@@ -364,11 +434,11 @@ void Cplex::createModelSubProblem(IloModel model, IloNumVarArray x, IloRangeArra
   }
 
   env.out() << "Duals = " << dual << endl;
-  IloExpr obj = x[0] * dual[0];
+  IloExpr obj = 1 - x[0] * dual[0];
   for (size_t j = 1; j < N + (D-1) ; j++) {
-    obj += (x[j] * dual[j]);
+    obj -= (x[j] * dual[j]);
   }
-  model.add(IloMaximize(env, obj));
+  model.add(IloMinimize(env, obj));
   obj.end();
 
   IloExpr exprConstraint(env);
@@ -534,9 +604,9 @@ IloNumArray Cplex::solveModel(IloCplex cplex,IloNumVarArray var, IloRangeArray c
   IloNumArray vals(env);
   cplex.getDuals(vals, con);
   //env.out() << "Duals = " << vals << endl;
-  /*IloNumArray cost(env);
+  IloNumArray cost(env);
   cplex.getReducedCosts(cost, var);
-  env.out() << "Reduced Costs = " << cost << endl;*/
+  //env.out() << "Reduced Costs = " << cost << endl;
   return vals;
   //cplex.writeSolution("sol.txt");
   //cplex.exportModel("lpex1.lp");

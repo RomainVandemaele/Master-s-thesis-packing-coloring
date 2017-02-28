@@ -49,6 +49,7 @@ class Cplex {
   void addColumn(bool* vertices);
 
   void test();
+  void test2();
 
 
 };
