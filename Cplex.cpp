@@ -269,11 +269,11 @@ void Cplex::createModelColor(IloModel model, IloNumVarArray x, IloRangeArray c) 
   IloEnv env = model.getEnv();
   for (size_t i = 0; i < N; i++) {
     for (size_t j = 0; j < N; j++) {
-      x.add(IloNumVar(env, 0.0, 1.0,ILOBOOL));
+      x.add(IloNumVar(env, 0, 1,ILOBOOL));
     }
   }
   //x_ij = x[i*N + j]
-  x.add(IloNumVar(env, 0.0, IloInfinity ,ILOINT)); //z
+  x.add(IloNumVar(env, 0, IloInfinity ,ILOINT)); //z
 
   //min z the number of color
   IloExpr obj = x[N*N];
@@ -374,7 +374,12 @@ void Cplex::createModelStable(IloModel model, IloNumVarArray x, IloRangeArray c)
 
   IloEnv env = model.getEnv();
   for (size_t i = 0; i < I; i++) {
-    x.add(IloNumVar(env, 0.0, 1.0,ILOFLOAT));
+    if(mod == BRANCH_AND_PRICE) {
+      x.add(IloNumVar(env, 0.0, 1.0,ILOFLOAT));
+    }else {
+      x.add(IloNumVar(env, 0.0, 1.0,ILOBOOL));
+    }
+
   }
 
   IloExpr obj = x[0];
@@ -433,7 +438,7 @@ void Cplex::createModelSubProblem(IloModel model, IloNumVarArray x, IloRangeArra
     }
   }
 
-  env.out() << "Duals = " << dual << endl;
+  //env.out() << "Duals = " << dual << endl;
   IloExpr obj = 1 - x[0] * dual[0];
   for (size_t j = 1; j < N + (D-1) ; j++) {
     obj -= (x[j] * dual[j]);
@@ -570,6 +575,13 @@ IloNumArray Cplex::solveModel(IloCplex cplex,IloNumVarArray var, IloRangeArray c
     for (size_t i = 0; i < I; i++) {
       if(cplex.getValue(var[i]) > 0) {
         std::cout << "Stable set " << i << " of category "<< classification[i] << " was choosen (" << cplex.getValue(var[i]) << ")" << std::endl;
+        if(classification[i]  == INF) {
+          for (size_t v = 0; v < N; v++) {
+            if(incidence[i][v]) {
+              std::cout << "\tcomposed of vertex " << v << '\n';
+            }
+          }
+        }
       }
     }
   }else if (mod == VERTEX_COLOR) {
@@ -603,11 +615,14 @@ IloNumArray Cplex::solveModel(IloCplex cplex,IloNumVarArray var, IloRangeArray c
 
   IloNumArray vals(env);
   cplex.getDuals(vals, con);
-  //env.out() << "Duals = " << vals << endl;
-  IloNumArray cost(env);
-  cplex.getReducedCosts(cost, var);
-  //env.out() << "Reduced Costs = " << cost << endl;
-  return vals;
+  if(mod == BRANCH_AND_PRICE) {
+    env.out() << "Duals = " << vals << endl;
+    IloNumArray cost(env);
+    cplex.getReducedCosts(cost, var);
+    env.out() << "Reduced Costs = " << cost << endl;
+    return vals;
+  }
+
   //cplex.writeSolution("sol.txt");
   //cplex.exportModel("lpex1.lp");
 }

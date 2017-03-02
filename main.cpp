@@ -8,6 +8,7 @@
 #include "Cplex.hpp"
 #include "Graph.hpp"
 
+
 unsigned int A = 0; //Algorithm
 const char* filename = NULL;
 //random graph
