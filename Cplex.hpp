@@ -42,14 +42,14 @@ class Cplex {
   void createModelColor(IloModel model, IloNumVarArray x, IloRangeArray c);
   void createModelColor2(IloModel model, IloNumVarArray x, IloRangeArray c);
   void createModelStable(IloModel model, IloNumVarArray x, IloRangeArray c);
-  IloNumArray solveModel(IloCplex cplex,IloNumVarArray x, IloRangeArray c);
+  float* solveModel(IloCplex cplex,IloNumVarArray x, IloRangeArray c);
 
-  void createModelSubProblem(IloModel model, IloNumVarArray x, IloRangeArray c,IloNumArray dual);
+  void createModelSubProblem(IloModel model, IloNumVarArray x, IloRangeArray c,float* dual);
   bool* solveSubProblem(IloCplex cplex,IloNumVarArray var, IloRangeArray con);
   void addColumn(bool* vertices);
 
   void test();
-  void test2();
+  float* test2();
 
 
 };

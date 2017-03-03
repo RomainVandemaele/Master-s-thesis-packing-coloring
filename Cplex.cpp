@@ -37,7 +37,7 @@ void Cplex::test() {
 }
 
 
-void Cplex::test2() { //Dual
+float* Cplex::test2() { //Dual
   IloEnv env2;
   IloModel model(env2);
   IloNumVarArray var(env2);
@@ -46,7 +46,7 @@ void Cplex::test2() { //Dual
     var.add(IloNumVar(env2, 0, 1,ILOFLOAT));
   }
   for (size_t j = 0; j < D-1; j++) {
-    var.add(IloNumVar(env2, 0, 1,ILOFLOAT));
+    var.add(IloNumVar(env2, 0, IloInfinity ,ILOFLOAT));
   }
   IloExpr obj = var[0];
   for (size_t j = 1; j < N  ; j++) {
@@ -95,7 +95,10 @@ void Cplex::test2() { //Dual
   cplex.getDuals(vals, con);
   std::cout << "Duals : " << vals << '\n';
   std::cout << "RESULT : " << '\n';
+
+  float* duals = new float[N+D-1];
   for (size_t i = 0; i < N+D-1; i++) {
+    duals[i] = cplex.getValue(var[i]);
     if(cplex.getValue(var[i]) == 1) {
       std::cout << "1 ";
     }else {
@@ -103,6 +106,7 @@ void Cplex::test2() { //Dual
     }
   }
   env2.end();
+  return duals;
 }
 
 Cplex::Cplex() {}
@@ -202,8 +206,9 @@ void Cplex::modelise() {
        env.end();
      }else if(mod == BRANCH_AND_PRICE) {
        int i=0;
-       std::cout << "OK : " << i << '\n';
-       while (i < 5) { //while(1 - cplexS.getObjValue() < 0 )
+       float res = -1;
+       while (res < 0) { //while(1 - cplexS.getObjValue() < 0 )
+        std::cout << "ROUND : " << i + 1 << '\n';
          IloEnv envP;
          IloModel model(envP);
          IloNumVarArray var(envP);
@@ -212,8 +217,12 @@ void Cplex::modelise() {
 
          IloCplex cplexP(model);
          std::cout << "\nPRIMAL : \n" << '\n';
-         IloNumArray duals = this->solveModel(cplexP,var,con);
+         //float* duals = this->solveModel(cplexP,var,con);
+         this->solveModel(cplexP,var,con);
          envP.end();
+
+         std::cout << "\nDUAL : \n" << '\n';
+         float* duals = test2();
 
          IloEnv envS;
          IloModel modelSub(envS);
@@ -223,9 +232,13 @@ void Cplex::modelise() {
          this->createModelSubProblem(modelSub,varSub,conSub,duals);
          IloCplex cplexS(modelSub);
          bool* newSubset = solveSubProblem(cplexS,varSub,conSub);
-         addColumn(newSubset); //Adapt primal : adding new subset
+         res = cplexS.getObjValue();
          envS.end();
-         //test2();
+
+         
+
+         addColumn(newSubset); //Adapt primal : adding new subset
+         
          ++i;
        }
 
@@ -419,7 +432,7 @@ void Cplex::createModelStable(IloModel model, IloNumVarArray x, IloRangeArray c)
 }
 
 
-void Cplex::createModelSubProblem(IloModel model, IloNumVarArray x, IloRangeArray c,IloNumArray dual) {
+void Cplex::createModelSubProblem(IloModel model, IloNumVarArray x, IloRangeArray c,float* dual) {
 
   IloEnv env = model.getEnv();
   for (size_t i = 0; i < N; i++) { //Yi : indicates if nodes i is in the new column(stable set)
@@ -564,7 +577,7 @@ bool* Cplex::solveSubProblem(IloCplex cplex,IloNumVarArray var, IloRangeArray co
   return subset;
 }
 
-IloNumArray Cplex::solveModel(IloCplex cplex,IloNumVarArray var, IloRangeArray con) {
+float* Cplex::solveModel(IloCplex cplex,IloNumVarArray var, IloRangeArray con) {
   // Optimize the problem and obtain solution.
   if ( !cplex.solve() ) {
      env.error() << "Failed to optimize LP" << endl;
@@ -578,7 +591,7 @@ IloNumArray Cplex::solveModel(IloCplex cplex,IloNumVarArray var, IloRangeArray c
         if(classification[i]  == INF) {
           for (size_t v = 0; v < N; v++) {
             if(incidence[i][v]) {
-              std::cout << "\tcomposed of vertex " << v << '\n';
+              //std::cout << "\tcomposed of vertex " << v << '\n';
             }
           }
         }
@@ -620,7 +633,12 @@ IloNumArray Cplex::solveModel(IloCplex cplex,IloNumVarArray var, IloRangeArray c
     IloNumArray cost(env);
     cplex.getReducedCosts(cost, var);
     env.out() << "Reduced Costs = " << cost << endl;
-    return vals;
+
+    float* duals = new float[N+D-1];
+    for(size_t i= 0;i<N+D-1;++i) {
+      duals[i] = vals[i];
+    }
+    return duals;
   }
 
   //cplex.writeSolution("sol.txt");
