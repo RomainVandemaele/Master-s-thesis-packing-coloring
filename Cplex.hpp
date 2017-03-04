@@ -49,7 +49,7 @@ class Cplex {
   void addColumn(bool* vertices);
 
   void test();
-  float* test2();
+  float* dual();
 
 
 };

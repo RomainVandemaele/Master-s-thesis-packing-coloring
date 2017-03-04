@@ -37,7 +37,7 @@ void Cplex::test() {
 }
 
 
-float* Cplex::test2() { //Dual
+float* Cplex::dual() { //Dual
   IloEnv env2;
   IloModel model(env2);
   IloNumVarArray var(env2);
@@ -46,7 +46,7 @@ float* Cplex::test2() { //Dual
     var.add(IloNumVar(env2, 0, 1,ILOFLOAT));
   }
   for (size_t j = 0; j < D-1; j++) {
-    var.add(IloNumVar(env2, 0, IloInfinity ,ILOFLOAT));
+    var.add(IloNumVar(env2, 0, 1 ,ILOFLOAT));
   }
   IloExpr obj = var[0];
   for (size_t j = 1; j < N  ; j++) {
@@ -62,23 +62,25 @@ float* Cplex::test2() { //Dual
 
   for (size_t i = 0; i < I; i++) {
     IloExpr exprConstraint(env2);
+
     for (size_t j = 0; j < N; j++) {
       if(incidence[i][j]) {
         exprConstraint += var[j];
       }
     }
-    for (size_t k = 1; k < D  ; k++) {
-      if(classification[i] >= k+1) {
-        exprConstraint += var[N+k -1];
+
+    if(classification[i]!=INF) {
+      for (size_t k = 1; k < D  ; k++) {
+        if(classification[i] >= k+1) {
+          exprConstraint += var[N+k -1];
+        }
       }
     }
+
     IloRange ctr1 ( env2, 0 , exprConstraint , 1);
     exprConstraint.end();
     con.add(ctr1);
   }
-
-  //must be one
-
 
   model.add(con);
 
@@ -222,7 +224,7 @@ void Cplex::modelise() {
          envP.end();
 
          std::cout << "\nDUAL : \n" << '\n';
-         float* duals = test2();
+         float* duals = dual();
 
          IloEnv envS;
          IloModel modelSub(envS);
@@ -388,6 +390,7 @@ void Cplex::createModelStable(IloModel model, IloNumVarArray x, IloRangeArray c)
   IloEnv env = model.getEnv();
   for (size_t i = 0; i < I; i++) {
     if(mod == BRANCH_AND_PRICE) {
+      //x.add(IloNumVar(env, 0.0, 1.0,ILOBOOL));
       x.add(IloNumVar(env, 0.0, 1.0,ILOFLOAT));
     }else {
       x.add(IloNumVar(env, 0.0, 1.0,ILOBOOL));
@@ -415,14 +418,14 @@ void Cplex::createModelStable(IloModel model, IloNumVarArray x, IloRangeArray c)
     exprConstraint.end();
   }
 
-  for (size_t i = 1; i < D; i++) {
+  for (size_t k = 2; k < D + 1; k++) {
     IloExpr exprConstraint(env);
     for (size_t j = 0; j < I; j++) {
-      if(classification[j] <= i +1) {
+      if(classification[j] <= k ) {
         exprConstraint += x[j];
       }
     }
-    IloRange ctr2 ( env, 0 , exprConstraint , i );
+    IloRange ctr2 ( env, 0 , exprConstraint , k - 1 );
     c.add(ctr2);
     exprConstraint.end();
   }
