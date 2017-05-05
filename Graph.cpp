@@ -135,28 +135,36 @@ void Graph::generateLatticeGraph(unsigned int row,unsigned int column) { //gener
       distances[i][j] = INF;
     }
   }
+  //std::cout << "OOOOOOOOOOKKKKKKK" << std::endl;
   for (size_t r = 0; r < row; ++r) {
     for (size_t c = 0; c < column; ++c) {
-      Node* v = new Node(r*row + c);
+      //std::cout << "OOOOOOOOOOKKKKKKK : " << r << " , " << c << std::endl;
+      Node* v = new Node(r*column + c);
       this->addNode(v);
       if(r > 0) {
-        nodes[r*row + c ]->addNeighboor(nodes[r*(row-1) + c]);
-        nodes[r*(row-1) + c]->addNeighboor(nodes[r*row + c]);
-        setDistance(r*row + c,r*(row-1) + c,1);
+        //std::cout << "OOOOOOOOOOKKKKKKK 1 : " << r << " , " << c << "  " << nodes[(r-1)*row + c ] << std::endl;
+        nodes[r*column + c ]->addNeighboor(nodes[(r-1)*column + c]);
+        //std::cout << "OOOOOOOOOOKKKKKKK 2 : " << r << " , " << c << std::endl;
+        nodes[(r-1)*column + c]->addNeighboor(nodes[r*column + c]);
+        //std::cout << "OOOOOOOOOOKKKKKKK 3 : " << r << " , " << c << std::endl;
+        setDistance(r*column + c,(r-1)*column + c,1);
+      }
+       //std::cout << "OOOOOOOOOOKKKKKKK 4 : " << r << " , " << c << std::endl;
+      if(c>0) {
+        nodes[r*column + c   ]->addNeighboor(nodes[r*column + c -1]);
+        nodes[r*column + c -1]->addNeighboor(nodes[r*column + c]);
+        setDistance(r*column + c,r*column + c -1,1);
       }
 
-      if(c>0) {
-        nodes[r*row + c   ]->addNeighboor(nodes[r*row + c -1]);
-        nodes[r*row + c -1]->addNeighboor(nodes[r*row + c]);
-        setDistance(r*row + c,r*row + c -1,1);
-      }
     }
   }
+  //std::cout << "OOOOOOOOOOKKKKKKK" << std::endl;
   this->neigbours = new std::vector<Node*>[N];
   for (size_t k = 0; k < N; k++) {
     neigbours[k] = nodes[k]->getNeighboor();
   }
   computeDistance();
+
 }
 
 
