@@ -1,0 +1,33 @@
+\glossarysection[\glossarytoctitle]{\glossarytitle}\glossarypreamble
+\begin{theglossary}\glossaryheader
+\glsgroupheading{glssymbols}\relax \glsresetentrylist %
+\glossentry{CycleGraph}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{EdgeSet}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{PathGraph}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{Hypercube}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{VerticesSet}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{chromaticNumber}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{packingChromaticNumber}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{BooleanSet}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{cliqueNumber}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{IndependentNumber}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{vertexCoverNumber}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{edgeNumber}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\glossentry{vertexNumber}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}\glsgroupskip
+\glsgroupheading{S}\relax \glsresetentrylist %
+\glossentry{st}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}}}%
+\end{theglossary}\glossarypostamble

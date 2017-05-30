@@ -1,0 +1,215 @@
+\documentclass[12pt,a4paper,oneside]{book}
+\usepackage[hmargin={1.2in,1.2in},vmargin={1.2in,1.2in}]{geometry}
+%%%%%%%%%%%%%%%%%%%%%%%%
+\makeindex
+\usepackage{textcomp}
+\usepackage{fancyhdr}
+\usepackage{makeidx}
+\pagestyle{myheadings}
+\fancyhf{}
+\rhead[\leftmark]{thepage}
+%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+%\usepackage{glossaries} % notations & abbreviations
+\usepackage{listings} % source code
+\usepackage{multicol} % text in 2 columns
+
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+%images and colors
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames]{color}
+
+\usepackage{amsmath, amsthm, amssymb} %definitions
+\usepackage{framed} %frames
+
+%ADDITION
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{tkz-graph}
+\usetikzlibrary{arrows,shapes}
+\usetikzlibrary{external}
+\tikzexternalize % activate!
+
+%\usepackage{algorithmicx}
+%\usepackage{algpseudocode}
+%\usepackage{algorithm}
+\usepackage[]{algorithm2e}
+
+\usepackage{float} %option H for placing table,figure,..
+\usepackage{svg}
+%\usepackage{amsmath}
+
+\usepackage{chngcntr}
+\counterwithout{equation}{chapter}
+
+\usepackage{comment}
+%\excludecomment{figure}
+%\let\endfigure\relax
+
+\definecolor{ref}{HTML}{FF0000}
+
+\newtheorem{mydef}{Definition}
+\newtheorem{thm}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\usepackage[final]{pdfpages} % include pdf files
+
+
+\numberwithin{equation}{chapter}
+
+% Lists of symbols and abbreviations
+\usepackage{glossaries}
+%\input{glossary}
+\loadglsentries{glossary}
+\makeglossaries
+
+
+\usepackage{hyperref}
+\hypersetup{
+	bookmarksnumbered = true,
+	pdfstartview      = FitH,
+	pdfborder         = {0 0 0},
+    colorlinks,
+    citecolor = blue,
+    filecolor=blue,
+    linkcolor=blue,
+    urlcolor=red,
+	pdfauthor   = {Romain Vandemaele},
+	pdftitle    = {Packing coloring : study of mixed integer formulations},
+	pdfsubject  = {Packing coloring}
+	}
+\everymath{\displaystyle}
+
+\begin{document}
+%%%%%%%%%%%%%%%%
+\frontmatter
+\begin{titlepage}
+\begin{center}
+	\textbf{UNIVERSIT\'E LIBRE DE BRUXELLES}\\
+	\textbf{Facult\'e des Sciences}\\
+	\textbf{D\'epartement d'Informatique}
+	\vfill{}\vfill{}
+
+	%\begin{center}
+	{\Huge  Packing coloring : study of mixed integers formulations}
+	%\end{center}
+
+	{\Huge \par}
+	\begin{center}{\LARGE Romain Vandemaele}\end{center}{\Huge \par}
+	\vfill{}
+	\includegraphics[keepaspectratio=true,scale=0.2]{figures/ulb.jpg}
+	\vfill{}
+	\begin{flushright}{\large \textbf{Promoteur :}}\hfill{}{\large Travail pr\'eparatoire au m\'emoire}\\ {\large \href{http://homepages.ulb.ac.be/~bfortz/}{Prof. Bernard Fortz}}\hfill{}
+    {pr\'esent\'e en vue de}\\
+	{\large l'obtention du grade de}\\
+	\hfill{}{\large Master en Sciences Informatiques}\end{flushright}{\large\par}
+	\vfill{}\vfill{}\enlargethispage{3cm}
+	\textbf{Ann\'ee acad\'emique $2015$~-~$2016$}
+\end{center}
+\end{titlepage}
+\newpage
+\thispagestyle{empty}
+\null
+
+\newenvironment{vcenterpage}
+{\newpage\thispagestyle{empty}
+\vspace*{\fill}}
+{\vspace*{\fill}\par\pagebreak}
+\pagebreak
+
+\begin{comment}
+\begin{vcenterpage}
+\begin{flushright}
+    \large\em\null\vskip1in
+        Dedicated to all the future jokes \\
+		this part is not obligatory \vfill
+  \end{flushright}
+\end{vcenterpage}
+\end{comment}
+
+
+
+
+\thispagestyle{empty}
+\vspace*{5cm}
+
+\begin{quotation}
+\noindent ``\emph{Science is what we understand well enough to explain to a computer, Art is all the rest.}''
+\begin{flushright}\textbf{Donald E. Knuth\footnote{\url{http://www-cs-faculty.stanford.edu/~uno/}}, 1996}\end{flushright}
+\end{quotation}
+
+\medskip
+
+\begin{quotation}
+\noindent ``\emph{The purpose of computation is insight, not numbers.}''
+\begin{flushright}\textbf{Richard Hamming\footnote{\url{https://en.wikipedia.org/wiki/Richard_Hamming}}, 1962}\end{flushright}
+\end{quotation}
+
+%\include{acknowledgments}
+
+\setcounter{page}{0}
+
+\tableofcontents
+\listoffigures
+\glsaddall
+\printglossaries
+
+
+\mainmatter
+
+
+%\include{introduction}
+
+
+\chapter*{Acknowledgements}
+\thispagestyle{empty}
+
+I like to acknowledge my advisor Bernard Fortz for its advices.
+
+\clearpage
+
+
+\include{chapters/chapter1}
+\include{chapters/chapter2}
+\include{chapters/chapter3}
+
+
+
+
+
+% \chapter{Modern jokes}
+
+% \chapter{Future jokes}
+
+% \part{Incredible jokes}
+% \label{part:ij}
+
+% %\include{theory}
+
+% \part{New jokes}
+% \label{part:nj}
+
+%\include{contribution}
+%\include{conclusions}
+%%%%%%%%%%%%%%%%
+%\include{appendix}
+
+
+
+\backmatter
+\printindex % il faudra utiliser l'utilitaire makeindex pour g\'en\'erer le fichier ad\'equat
+\bibliographystyle{plain}
+\bibliography{biblio} %si on utilise bibtex (il y a beaucoup plus de possibilit\'es qu'indiqu\'ees dans ce fichier)
+%on peut bien sûr g\'erer la bibliographie soi-m\^eme
+%on peut aussi pr\'evoir une webographie s\'epar\'ee
+
+% include all references (also not cited)
+\nocite{*}
+%%%%%%%%%%%%%%%%
+\end{document}

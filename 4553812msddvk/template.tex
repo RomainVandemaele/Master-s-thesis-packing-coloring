@@ -1,0 +1,162 @@
+\documentclass[11pt,a4paper,oneside]{book}
+\usepackage[hmargin={1.25in,1.25in},vmargin={1.25in,1.25in}]{geometry}
+%%%%%%%%%%%%%%%%%%%%%%%%
+\makeindex
+\usepackage{textcomp}
+\usepackage{fancyhdr}
+\usepackage{makeidx}
+\pagestyle{myheadings}
+\fancyhf{}
+\rhead[\leftmark]{thepage}
+%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{url}
+\usepackage{glossaries} % notations & abbreviations
+\usepackage{listings} % source code
+\usepackage{multicol} % text in 2 columns
+
+%images and colors
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames]{color}
+
+\usepackage{amsmath, amsthm, amssymb} %definitions
+\usepackage{framed} %frames
+
+\newtheorem{definition}{Definition}
+
+\usepackage[final]{pdfpages} % include pdf files
+
+% Lists of symbols and abbreviations
+\makeglossaries
+\newglossaryentry{SJ}{name={$\mathcal{C}^\infty$},sort=sj,
+description={Special Chuck Norris Joke Symbol}}
+
+\usepackage{hyperref}
+\hypersetup{
+	bookmarksnumbered = true,
+	pdfstartview      = FitH,
+	pdfborder         = {0 0 0},
+	pdfauthor   = {Chuck Norris},
+	pdftitle    = {List of jokes},
+	pdfsubject  = {Chuck Norris Jokes}
+	}
+
+\begin{document}
+%%%%%%%%%%%%%%%%
+\frontmatter
+\begin{titlepage}
+\begin{center}
+	\textbf{UNIVERSIT\'E LIBRE DE BRUXELLES}\\
+	\textbf{Facult\'e des Sciences}\\
+	\textbf{D\'epartement d'Informatique}
+	\vfill{}\vfill{}
+
+	%\begin{center}
+	{\Huge  List of best jokes about Chuck Norris}
+	%\end{center}
+
+	{\Huge \par}
+	\begin{center}{\LARGE Chuck Norris}\end{center}{\Huge \par}
+	\vfill{}
+	\includegraphics[keepaspectratio=true,scale=1]{images/ulb.pdf}
+	\vfill{}
+	\begin{flushright}{\large \textbf{Promoteur :}}\hfill{}{\large M\'emoire pr\'esent\'e en vue de}\\
+	{\large Prof. Chuck Norris}\hfill{}{\large l'obtention du grade de}\\
+	\hfill{}{\large Master en Sciences Informatiques}\end{flushright}{\large\par}
+	\vfill{}\vfill{}\enlargethispage{3cm}
+	\textbf{Ann\'ee acad\'emique $\infty$~-~$\infty + 1$}
+\end{center}
+\end{titlepage}
+\newpage
+\thispagestyle{empty} 
+\null
+
+\newenvironment{vcenterpage}
+{\newpage\thispagestyle{empty}
+\vspace*{\fill}}
+{\vspace*{\fill}\par\pagebreak}
+
+\begin{vcenterpage}
+\begin{flushright}
+    \large\em\null\vskip1in 
+        Dedicated to all the future jokes \\
+		this part is not obligatory \vfill
+  \end{flushright}
+\end{vcenterpage}
+\thispagestyle{empty}
+\vspace*{5cm}
+
+\begin{quotation}
+\noindent ``\emph{Citation.}''
+\begin{flushright}\textbf{autor, date}\end{flushright}
+\end{quotation}
+
+\medskip
+
+\begin{quotation}
+\noindent ``\emph{citations.}''
+\begin{flushright}\textbf{autor, date}\end{flushright}
+\end{quotation}
+
+%\include{acknowledgments}
+
+\setcounter{page}{0}
+\tableofcontents
+
+\printglossaries
+
+\mainmatter 
+
+
+%\include{introduction}
+
+\part{History of Jokes}
+\label{part:hj}
+
+\chapter{Early jokes}
+\label{ch:ej}
+
+\section{The beginning}
+\label{sec:beginning}
+
+\subsection{How it all started}
+\label{subsec:start}
+%\include{history}
+% all this suff should be in a separate file
+% I would recomend to create a separate file per chapter
+Here it goes~\cite{encyclopedia_of_jokes} .. \gls{SJ}
+\section{The development}
+\section{Different types of jokes}
+
+
+\chapter{Modern jokes}
+
+\chapter{Future jokes}
+
+\part{Incredible jokes}
+\label{part:ij}
+
+%\include{theory}
+
+\part{New jokes}
+\label{part:nj}
+%\include{contribution}
+%\include{conclusions}
+%%%%%%%%%%%%%%%%
+%\include{appendix}
+
+    
+
+\backmatter
+\printindex % il faudra utiliser l'utilitaire makeindex pour g\'en\'erer le fichier ad\'equat
+\bibliographystyle{plain}
+\bibliography{biblio} %si on utilise bibtex (il y a beaucoup plus de possibilit\'es qu'indiqu\'ees dans ce fichier)
+%on peut bien sûr g\'erer la bibliographie soi-m\^eme
+%on peut aussi pr\'evoir une webographie s\'epar\'ee
+
+% include all references (also not cited)
+\nocite{*}
+%%%%%%%%%%%%%%%%
+\end{document}
+
