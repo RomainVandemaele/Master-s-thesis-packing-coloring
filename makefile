@@ -16,8 +16,8 @@ CXX = g++
 RM  = rm -f
 CPPFLAGS = -O3 -Wall -ansi -pedantic -DIL_STD -std=c++11 $(CPLEXFLAGS) $(DEBUG)
 LDFLAGS  = -g   $(DEBUG)
-#DEBUG = -pg -g -Wall -ansi -pedantic -DIL_STD
-#DEBUG  = -ggdb -pg # -lefence
+DEBUG = -pg -g -Wall -ansi -pedantic -DIL_STD
+DEBUG  = -ggdb -pg # -lefence
 
 PACKAGE = coloring
 

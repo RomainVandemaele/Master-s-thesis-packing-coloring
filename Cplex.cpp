@@ -3,6 +3,7 @@
 //Ex from pdf
 void Cplex::test() {
   IloModel model(env);
+  
   IloNumVarArray var(env);
   IloRangeArray con(env);
   var.add(IloNumVar(env, 0, IloInfinity,ILOFLOAT));
@@ -19,7 +20,6 @@ void Cplex::test() {
   con.add(ctr1);
   con.add(ctr2);
   con.add(ctr3);
-
   model.add(con);
 
 
@@ -185,7 +185,7 @@ void Cplex::importFileStable(const char* filename,bool dist) {
         myFscanf(file, "%u", &distances[i][j]);
       }
     }
-    std::cout << "distance 0 1" << distances[0][1] << '\n';
+    std::cout << "distance 0 15 : " << distances[0][15] << '\n';
   }
 
   fclose(file);
@@ -209,22 +209,23 @@ void Cplex::modelise() {
        env.end();
      }else if(mod == BRANCH_AND_PRICE) {
        int i=0;
-       float res = 3;
-       double eps = -0.00005;
+       float res = 4;
+       int eps = -0.00005;
        while ( (1 - res) < eps  ) { //while(1 - cplexS.getObjValue() < 0 )
          std::cout << "ROUND : " << i + 1 << '\n';
          IloEnv envP;
-         IloModel model(envP);
-         IloNumVarArray var(envP);
-         IloRangeArray con(envP);
-         this->createModelStable(model,var,con);
+         IloModel modelP(envP);
+         IloNumVarArray varP(envP);
+         IloRangeArray conP(envP);
+         this->createModelStable(modelP,varP,conP);
 
-         IloCplex cplexP(model);
+         IloCplex cplexP(modelP);
          std::cout << "\nPRIMAL : \n" << '\n';
-         float* duals = this->solveModel(cplexP,var,con);
+         float* duals = this->solveModel(cplexP,varP,conP);
          //this->solveModel(cplexP,var,con);
+         modelP.end();
          envP.end();
-         std::cout << "\nDUAL : \n" << '\n';
+         //std::cout << "\nDUAL : \n" << '\n';
         // this->dual();
 
          IloEnv envS;
@@ -236,10 +237,13 @@ void Cplex::modelise() {
          IloCplex cplexS(modelSub);
          bool* newSubset = solveSubProblem(cplexS,varSub,conSub);
          res = cplexS.getObjValue();
-         std::cout << "COST : " << 1 - res << std::endl;
+         modelSub.end();
          envS.end();
+         
 
          addColumn(newSubset); //Adapt primal : adding new subset
+         std::cout << "COST : " << 1 - res <<   std::endl;
+         delete[] duals;
          ++i;
        }
 
@@ -491,14 +495,20 @@ void Cplex::createModelSubProblem(IloModel model, IloNumVarArray x, IloRangeArra
   for (size_t i = 0; i < N; i++) {
     for (size_t j = i+1; j < N; j++) {
       for (size_t k = 1; k < D; k++) { // z_ijk* (k+1) <= Dij * Zijk
-        IloExpr exprConstraint(env);
+        //IloExpr exprConstraint(env);
         const int d = distances[i][j];
-        exprConstraint +=  x[N + (D-1) + (k-1)*N*N + i*N + j] * d;
+        /*exprConstraint +=  x[N + (D-1) + (k-1)*N*N + i*N + j] * d;
         const int d2 = k+1;
         exprConstraint -=  x[N + (D-1) + (k-1)*N*N + i*N + j] * d2;
-        IloRange ctr3 ( env, 0 , exprConstraint , D);
-        c.add(ctr3);
-        exprConstraint.end();
+        IloRange ctr3 ( env, 0 , exprConstraint , D);*/
+        if(k+1 > d) {
+          IloExpr exprConstraint(env);
+          exprConstraint +=  x[N + (D-1) + (k-1)*N*N + i*N + j];
+          IloRange ctr3 ( env, 0 , exprConstraint , 0);
+          c.add(ctr3);
+          exprConstraint.end();
+        }
+        
       }
     }
   }
@@ -588,13 +598,13 @@ float* Cplex::solveModel(IloCplex cplex,IloNumVarArray var, IloRangeArray con) {
     for (size_t i = 0; i < I; i++) {
       if(cplex.getValue(var[i]) > 0) {
         std::cout << "Stable set " << i << " of category "<< classification[i] << " was choosen (" << cplex.getValue(var[i]) << ")" << std::endl;
-        if(classification[i]  == INF) {
+        /*if(classification[i]  == INF) {
           for (size_t v = 0; v < N; v++) {
             if(incidence[i][v]) {
               //std::cout << "\tcomposed of vertex " << v << '\n';
             }
           }
-        }
+        }*/
       }
     }
   }else if (mod == VERTEX_COLOR) {
